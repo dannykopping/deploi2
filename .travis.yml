@@ -8,4 +8,4 @@ before_script:
   - curl -s https://getcomposer.org/installer | php
   - php composer.phar update --dev
 
-script: bin/behat
+script: bin/behat --config config/behat.yml

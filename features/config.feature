@@ -1,5 +1,5 @@
 Feature: Config options
-    In order to use deploi
+    In order to use deploi effectively
     As a developer
     I need to be able to set and get configuration options
 
