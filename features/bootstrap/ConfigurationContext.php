@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__.'/../../vendor/phpunit/phpunit/PHPUnit/Framework/Assert/Functions.php';
-
 use Behat\Behat\Context\BehatContext;
 use Deploi\Config;
 use Behat\Behat\Exception\BehaviorException;
@@ -18,10 +16,6 @@ class ConfigurationContext extends BehatContext
     public function __construct(array $parameters)
     {
         $this->basePath = realpath(dirname(dirname(__DIR__)));
-
-        // include Deploi
-        require_once $this->basePath . DIRECTORY_SEPARATOR . "Deploi" . DIRECTORY_SEPARATOR . "Deploi.php";
-        \Deploi\Deploi::registerAutoloader();
     }
 
     /**
