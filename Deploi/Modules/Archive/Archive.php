@@ -94,7 +94,7 @@ class Archive extends Base
             $tar->convertToData(Phar::TAR, Phar::GZ);
         } catch(Exception $e) {
             // ignore this error
-            if (strpos($e->getMessage(), "a phar with that name already exists") === false) {
+            if (!$overwrite && strpos($e->getMessage(), "a phar with that name already exists") === false) {
                 throw $e;
             }
         }

@@ -44,9 +44,12 @@ class ArchiveContext extends BehatContext
      */
     public function dispose(ScenarioEvent $event)
     {
-        if (file_exists($this->archivePath)) {
-            @unlink($this->archivePath);
+        try {
+            PharData::unlinkArchive($this->archivePath);
+        } catch(Exception $e) {
         }
+
+        clearstatcache();
     }
 
     /**
@@ -55,8 +58,14 @@ class ArchiveContext extends BehatContext
     public function iAddAnArrayOfValidFilePaths()
     {
         $this->fileSet = new FileSet($this->basePath, array("composer.json", ".travis.yml", "bin"));
-        $this->archive = new Archive();
-        $this->archive->setFileSet($this->fileSet);
+    }
+
+    /**
+     * @Given /^I add an array of path exclusions$/
+     */
+    public function iAddAnArrayOfPathExclusions()
+    {
+        $this->fileSet->setExclusions(array("bin/behat", "composer.json"));
     }
 
     /**
@@ -64,20 +73,25 @@ class ArchiveContext extends BehatContext
      */
     public function iCreateAnArchive()
     {
+        $this->archive = new Archive();
+        $this->archive->setFileSet($this->fileSet);
+
         try {
-            $this->archivePath = $this->archive->save(sys_get_temp_dir(), true, false);
+            $this->archivePath = $this->archive->save("archives", false, true);
         } catch(Exception $e) {
             $this->exceptionThrown = true;
         }
     }
 
     /**
-     * @Then /^I should have the same number of files in the archive$/
+     * @Then /^I should have the correct number of files in the archive$/
      */
-    public function iShouldHaveTheSameNumberOfFilesInTheArchive()
+    public function iShouldHaveTheCorrectNumberOfFilesInTheArchive()
     {
+        assertFileExists($this->archivePath);
+
         $file = new PharData($this->archivePath);
-        assertEquals(count($this->archive->getFileSet()->getPaths()), $file->count());
+        assertEquals(count($this->fileSet->getValidPaths()), $file->count());
     }
 
     /**
@@ -86,8 +100,6 @@ class ArchiveContext extends BehatContext
     public function iAddNoFilePaths()
     {
         $this->fileSet = new FileSet();
-        $this->archive = new Archive();
-        $this->archive->setFileSet($this->fileSet);
     }
 
     /**
@@ -111,8 +123,6 @@ class ArchiveContext extends BehatContext
      */
     public function iAddAnInvalidFilePath()
     {
-        $this->fileSet = new FileSet($this->basePath, array("composer.yml"));
-        $this->archive = new Archive();
-        $this->archive->setFileSet($this->fileSet);
+        $this->fileSet = new FileSet(null, array("composer.yml"));
     }
 }

@@ -6,7 +6,13 @@ Feature: Archive
     Scenario: Adding a number of valid file paths results in a valid archive
         Given I add an array of valid file paths
         When I create an archive
-        Then I should have the same number of files in the archive
+        Then I should have the correct number of files in the archive
+
+    Scenario: Adding a number of valid file paths and path exclusions results in a valid archive
+        Given I add an array of valid file paths
+        And I add an array of path exclusions
+        When I create an archive
+        Then I should have the correct number of files in the archive
 
     Scenario: Adding no file paths results in an empty archive
         Given I add no file paths
