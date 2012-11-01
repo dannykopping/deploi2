@@ -95,7 +95,15 @@ class ArchiveContext extends BehatContext
      */
     public function iShouldHaveANonExistentArchive()
     {
-        assertTrue(empty($this->archivePath) || $this->exceptionThrown);
+        assertTrue(empty($this->archivePath));
+    }
+
+    /**
+     * @Given /^I should have received an exception$/
+     */
+    public function iShouldHaveReceivedAnException()
+    {
+        assertTrue($this->exceptionThrown);
     }
 
     /**
@@ -103,14 +111,8 @@ class ArchiveContext extends BehatContext
      */
     public function iAddAnInvalidFilePath()
     {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then /^I should get an exception$/
-     */
-    public function iShouldGetAnException()
-    {
-        throw new PendingException();
+        $this->fileSet = new FileSet($this->basePath, array("composer.yml"));
+        $this->archive = new Archive();
+        $this->archive->setFileSet($this->fileSet);
     }
 }
